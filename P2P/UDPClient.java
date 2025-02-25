@@ -1,3 +1,4 @@
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.*;
 import java.security.SecureRandom;
@@ -15,15 +16,22 @@ public class UDPClient
     // int random = secureRandom.nextInt(30) + 1;
     DatagramSocket Socket;
 
-    public UDPClient() 
-    {
-
+    public UDPClient(){
+        try{
+            // Write client's name, IP and port to the config file 
+            try (FileWriter writer = new FileWriter("P2Pconfig.txt")) {
+                writer.write("IP: " + InetAddress.getLocalHost() + "\n");
+                writer.write(" Port: 9876");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void createAndListenSocket() 
-    {
-        try 
-        { 
+    public void createAndListenSocket() {
+        try { 
             // random = secureRandom.nextInt(30) + 1;
             Socket = new DatagramSocket();
             InetAddress IPAddress = InetAddress.getByName("10.111.142.78");
