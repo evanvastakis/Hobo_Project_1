@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.net.*;
+import java.security.SecureRandom;
+import java.util.concurrent.TimeUnit;
 /**
  * 
  * @author cjaiswal
@@ -9,6 +11,8 @@ import java.net.*;
  */
 public class UDPClient 
 {
+    static SecureRandom secureRandom = new SecureRandom();
+    // int random = secureRandom.nextInt(30) + 1;
     DatagramSocket Socket;
 
     public UDPClient() 
@@ -20,6 +24,7 @@ public class UDPClient
     {
         try 
         { 
+            // random = secureRandom.nextInt(30) + 1;
             Socket = new DatagramSocket();
             InetAddress IPAddress = InetAddress.getByName("10.111.142.78");
             byte[] incomingData = new byte[1024];
@@ -48,10 +53,16 @@ public class UDPClient
         }
     }
 
-    public static void main(String[] args) 
+    public static void main(String[] args) throws InterruptedException 
     {
         UDPClient client = new UDPClient();
-        client.createAndListenSocket();
+        while(true){
+            int random = secureRandom.nextInt(5) + 1;
+            System.out.println("Waiting for " + random + " seconds");
+            TimeUnit.SECONDS.sleep(random);
+            System.out.println("We are waiting");   
+            client.createAndListenSocket();
+        }
     }
 }
 

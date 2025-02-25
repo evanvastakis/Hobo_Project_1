@@ -12,6 +12,11 @@ import java.net.SocketException;
  */
 public class UDPServer2
 {
+    final int NODE_COUNT = 6;
+    private boolean[] nodeStatus = new boolean[NODE_COUNT];
+    private String[] nodeIPS = new String[NODE_COUNT];
+    private int[] nodeTimes = new int[NODE_COUNT];
+
     private DatagramSocket socket = null;
 
     public UDPServer2() 
@@ -43,7 +48,12 @@ public class UDPServer2
                 
                 //wait for the packet to arrive and store it in incoming packet
                 socket.receive(incomingPacket);
-                
+                for(int i = 0; i < NODE_COUNT; i++){
+                    // match incoming packet to its status 
+                    if(nodeIPS[i].equals(incomingPacket.getAddress())){
+                        nodeStatus[i] = true;
+                    }
+                }
                 //retrieve the data
                 String message = new String(incomingPacket.getData());
                 
