@@ -60,6 +60,9 @@ public class UDPServer2
                         nodeIPS.put(IPKeys[i], incomingPacket.getAddress());
                         break;
                     }
+                }
+            
+                for(int i = 0; i < NODE_COUNT; i++){
                     System.out.println(nodeIPS.get(IPKeys[i]));
                 }
 
@@ -69,6 +72,7 @@ public class UDPServer2
                     if(nodeIPS.get(IPKeys[i]).equals(incomingPacket.getAddress())){
                         nodeStatus[i] = true;
                     }
+                    System.out.println("Node " + (i+1) + " is alive: " + nodeStatus[i]);
                 }
                 //retrieve the data
                 String message = new String(incomingPacket.getData());
