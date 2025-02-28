@@ -37,12 +37,13 @@ public class UDPClient implements Serializable {
 
             String sentence = " ";
 
-            File folder = new File("C:\\\\Users\\\\evanv\\\\OneDrive\\\\Computer_Science\\\\SophomoreYear\\\\CSC340\\\\Hobo_Project_1\\\\P2P");
+            File folder = new File("C:\\Users\\evanv\\OneDrive\\Computer_Science\\SophomoreYear\\CSC340\\Hobo_Project_1\\P2P");
             File[] listOfFiles = folder.listFiles();
+
             if (listOfFiles != null) {
                 for (int i = 0; i < listOfFiles.length; i++) {
                     if (listOfFiles[i].isFile()) {
-                        sentence += listOfFiles[i];
+                        sentence += listOfFiles[i].getName() + ", "; // Add file name with a space separator
                     }
                 }
             }
@@ -61,7 +62,7 @@ public class UDPClient implements Serializable {
             socket.close();
 
             // Save the updated configuration
-            saveToTextFile();
+            // saveToTextFile();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,15 +72,15 @@ public class UDPClient implements Serializable {
     /**
      * Serializes the UDPClient object and saves it to a file.
      */
-    public void saveToTextFile() {
-        try (FileWriter writer = new FileWriter("P2Pconfig.txt")) {
-            writer.write("Client IP: " + clientIP + "\n");
-            writer.write("Port: " + port + "\n");
-            System.out.println("Configuration saved as text.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    // public void saveToTextFile() {
+    //     try (FileWriter writer = new FileWriter("P2Pconfig.txt")) {
+    //         writer.write("Client IP: " + clientIP + "\n");
+    //         writer.write("Port: " + port + "\n");
+    //         System.out.println("Configuration saved as text.");
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
     /**
      * Reads and deserializes the UDPClient object from the file.
@@ -109,7 +110,7 @@ public class UDPClient implements Serializable {
 
     public static void main(String[] args) throws InterruptedException {
         UDPClient client = new UDPClient();
-        client.saveToTextFile();
+        // client.saveToTextFile();
 
         UDPClient loadedClient = UDPClient.loadFromTextFile();
         if (loadedClient != null) {
