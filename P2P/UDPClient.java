@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author cjaiswal
  */
-public class UDPClient extends Protocol implements Serializable  {
+public class UDPClient extends Protocol implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final int serverPort = 9876;
@@ -15,8 +15,6 @@ public class UDPClient extends Protocol implements Serializable  {
 
     // DatagramSocket is not serializable, so mark it as transient
     private transient DatagramSocket socket;
-    // private String clientIP;
-    // private int port;
 
     public UDPClient() {
         // try {
@@ -25,9 +23,8 @@ public class UDPClient extends Protocol implements Serializable  {
         //     String ipAddress = ip.getHostAddress(); // Get IP as a string
         //     System.out.println("DEBUG, OWN IP: " + ipAddress.toString());
         // } catch(UnknownHostException e) {
-            
-        // }
         
+        // }
     }
 
     public void createAndListenSocket() {
@@ -62,7 +59,7 @@ public class UDPClient extends Protocol implements Serializable  {
             socket.send(sendPacket);
             System.out.println("Message sent from client");
 
-            // Receieving (response)
+            // Receiving (response)
             DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
             socket.receive(incomingPacket);
 
@@ -80,60 +77,28 @@ public class UDPClient extends Protocol implements Serializable  {
     }
 
     /**
-     * Serializes the UDPClient object and saves it to a file.
+     * Handles object serialization.
      */
-    // public void saveToTextFile() {
-    //     try (FileWriter writer = new FileWriter("P2Pconfig.txt")) {
-    //         writer.write("Client IP: " + clientIP + "\n");
-    //         writer.write("Port: " + port + "\n");
-    //         System.out.println("Configuration saved as text.");
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
 
     /**
-     * Reads and deserializes the UDPClient object from the file.
+     * Handles object deserialization and reinitializes transient fields.
      */
-    // public static UDPClient loadFromTextFile() {
-    //     UDPClient client = new UDPClient();
-    //     try (BufferedReader reader = new BufferedReader(new FileReader("P2Pconfig.txt"))) {
-    //         String line;
-    //         while ((line = reader.readLine()) != null) {
-    //             if (line.startsWith("Client IP: ")) {
-    //                 // client.clientIP = line.substring(10).trim();
-    //                 String ipAsString = client.getIp().toString();
-    //                 ipAsString = line.substring(10).trim();
-
-    //             } else if (line.startsWith("Port: ")) {
-    //                 // client.port = Integer.parseInt(line.substring(6).trim());
-    //                 client.
-    //             }
-    //         }
-    //         System.out.println("Configuration loaded from text file.");
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    //     return client;
-    // }
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        socket = new DatagramSocket(); // Reinitialize transient field
+    }
 
     public void displayConfig() {
-        // System.out.println("Client IP: " + clientIP);
         // System.out.println("Client IP: " + getIP());
-
         // System.out.println("Port: " + port);
     }
 
     public static void main(String[] args) throws InterruptedException {
         UDPClient client = new UDPClient();
-        // client.saveToTextFile();
-
-        // UDPClient loadedClient = UDPClient.loadFromTextFile();
-        // if (loadedClient != null) {
-        //     System.out.println("Loaded from text file:");
-        //     loadedClient.displayConfig();
-        // }
-
+        
         // Sending messages
         int maxAttempts = 5;
         for (int attempt = 0; attempt < maxAttempts; attempt++) {
