@@ -55,10 +55,13 @@ public class UDPServer2
                 socket.receive(incomingPacket);
 
                 // this is meant to fill up the hash map with different IP values
-                for(int i = 0; i < NODE_COUNT; i++){
-                    if(nodeIPS.get(IPKeys[i]).equals(InetAddress.getLocalHost())){
+                for (int i = 0; i < NODE_COUNT; i++) {
+                    InetAddress currentAddress = nodeIPS.get(IPKeys[i]);
+                
+                    // Only replace the slot if it matches the local IP and the incoming IP is not already in the map
+                    if (currentAddress.equals(InetAddress.getLocalHost()) && !nodeIPS.containsValue(incomingPacket.getAddress())) {
                         nodeIPS.put(IPKeys[i], incomingPacket.getAddress());
-                        break;
+                        break; // Exit loop after inserting the new address
                     }
                 }
             

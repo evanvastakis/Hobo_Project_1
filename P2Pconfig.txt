@@ -1,2 +1,2 @@
-IP: Evan_Computer/192.168.56.1
- Port: 9876
+Client IP: 192.168.56.1
+Port: 50130
