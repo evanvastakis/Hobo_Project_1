@@ -1,3 +1,4 @@
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -53,6 +54,14 @@ public class UDPServer2
                 
                 //wait for the packet to arrive and store it in incoming packet
                 socket.receive(incomingPacket);
+
+                try (FileWriter writer = new FileWriter("P2Pconfig.txt")) {
+                    writer.write("Client IP: " + incomingPacket.getAddress() + "\n");
+                    writer.write("Port: " + incomingPacket.getPort() + "\n");
+                    System.out.println("Configuration saved as text.");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 // this is meant to fill up the hash map with different IP values
                 for (int i = 0; i < NODE_COUNT; i++) {
