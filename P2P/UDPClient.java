@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author cjaiswal
  */
-public class UDPClient implements Serializable {
+public class UDPClient extends Protocol implements Serializable  {
     private static final long serialVersionUID = 1L;
 
     static SecureRandom secureRandom = new SecureRandom();
@@ -17,12 +17,15 @@ public class UDPClient implements Serializable {
     private int port;
 
     public UDPClient() {
-        try {
-            this.clientIP = InetAddress.getLocalHost().getHostAddress();
-            this.port = 9876;
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+        // try {
+            
+        //     // OLD (delete):
+        //     this.clientIP = InetAddress.getLocalHost().getHostAddress();
+        //     this.port = 9876;
+
+        // } catch (UnknownHostException e) {
+        //     e.printStackTrace();
+        // }
     }
 
     public void createAndListenSocket() {
@@ -31,13 +34,22 @@ public class UDPClient implements Serializable {
 
             // Get the actual port assigned by the OS
             this.port = socket.getLocalPort();
-
             InetAddress IPAddress = InetAddress.getByName("10.111.142.78");
+
+            this.setIp(InetAddress.getLocalHost().getHostAddress());
+            this.setPort(9876);
+
+
             byte[] incomingData = new byte[1024];
 
             String sentence = " ";
 
-            File folder = new File("C:\\Users\\evanv\\OneDrive\\Computer_Science\\SophomoreYear\\CSC340\\Hobo_Project_1\\P2P");
+            // Evan
+            // File folder = new File("C:\\Users\\evanv\\OneDrive\\Computer_Science\\SophomoreYear\\CSC340\\Hobo_Project_1\\P2P");
+            
+            // Grant
+            File folder = new File("/Users/grant/Downloads/Course Materials/Spring 2025/CSC340/Hobo_Project_1/P2P");
+            
             File[] listOfFiles = folder.listFiles();
 
             if (listOfFiles != null) {
@@ -112,11 +124,11 @@ public class UDPClient implements Serializable {
         UDPClient client = new UDPClient();
         // client.saveToTextFile();
 
-        UDPClient loadedClient = UDPClient.loadFromTextFile();
-        if (loadedClient != null) {
-            System.out.println("Loaded from text file:");
-            loadedClient.displayConfig();
-        }
+        // UDPClient loadedClient = UDPClient.loadFromTextFile();
+        // if (loadedClient != null) {
+        //     System.out.println("Loaded from text file:");
+        //     loadedClient.displayConfig();
+        // }
 
         // Sending messages
         int maxAttempts = 5;
