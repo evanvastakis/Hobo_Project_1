@@ -1,24 +1,16 @@
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 public class Protocol {
     
     private double timeStamp; // Time at which packet was made.
     private int port; // Sender port 
-    private String ip; // Sender ip
+    private InetAddress ip; // Sender ip
     private int destPort; // Destination port 
-    private String destIp; // Destination ip
+    private InetAddress destIp; // Destination ip
     private String name; // Name of node with its ip
     private String fileList; // List of that node's files
 
     public Protocol(){
-        // Get ip
-        try {
-            this.ip = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            this.ip = "Unknown IP";
-        }
     }
 
     // Getters
@@ -31,7 +23,7 @@ public class Protocol {
         return port;
     }
 
-    public String getIp() {
+    public InetAddress getIp() {
         return ip;
     }
 
@@ -39,7 +31,7 @@ public class Protocol {
         return destPort;
     }
 
-    public String getDestIp() {
+    public InetAddress getDestIp() {
         return destIp;
     }
 
@@ -61,7 +53,7 @@ public class Protocol {
         this.port = port;
     }
 
-    public void setIp(String ip) {
+    public void setIp(InetAddress ip) {
         this.ip = ip;
     }
 
@@ -69,7 +61,7 @@ public class Protocol {
         this.destPort = destPort;
     }
 
-    public void setDestIp(String destIp) {
+    public void setDestIp(InetAddress destIp) {
         this.destIp = destIp;
     }
 

@@ -7,41 +7,37 @@ import java.util.concurrent.TimeUnit;
  * @author cjaiswal
  */
 public class UDPClient extends Protocol implements Serializable  {
+
     private static final long serialVersionUID = 1L;
+    private static final int serverPort = 9876;
 
     static SecureRandom secureRandom = new SecureRandom();
 
     // DatagramSocket is not serializable, so mark it as transient
     private transient DatagramSocket socket;
-    private String clientIP;
-    private int port;
+    // private String clientIP;
+    // private int port;
 
     public UDPClient() {
         // try {
+        //     // Get own IP
+        //     InetAddress ip = InetAddress.getLocalHost();
+        //     String ipAddress = ip.getHostAddress(); // Get IP as a string
+        //     System.out.println("DEBUG, OWN IP: " + ipAddress.toString());
+        // } catch(UnknownHostException e) {
             
-        //     // OLD (delete):
-        //     this.clientIP = InetAddress.getLocalHost().getHostAddress();
-        //     this.port = 9876;
-
-        // } catch (UnknownHostException e) {
-        //     e.printStackTrace();
         // }
+        
     }
 
     public void createAndListenSocket() {
         try {
             socket = new DatagramSocket();
 
-            // Get the actual port assigned by the OS
-            this.port = socket.getLocalPort();
-            InetAddress IPAddress = InetAddress.getByName("10.111.142.78");
-
-            this.setIp(InetAddress.getLocalHost().getHostAddress());
-            this.setPort(9876);
-
+            this.setDestIp(InetAddress.getByName("10.111.142.78"));  // Destination IP (to be written in from config)
+            this.setDestPort(9876);
 
             byte[] incomingData = new byte[1024];
-
             String sentence = " ";
 
             // Evan
@@ -60,11 +56,13 @@ public class UDPClient extends Protocol implements Serializable  {
                 }
             }
 
+            // Sending
             byte[] data = sentence.getBytes();
-            DatagramPacket sendPacket = new DatagramPacket(data, data.length, IPAddress, 9876);
+            DatagramPacket sendPacket = new DatagramPacket(data, data.length, getDestIp(), serverPort);
             socket.send(sendPacket);
             System.out.println("Message sent from client");
 
+            // Receieving (response)
             DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
             socket.receive(incomingPacket);
 
@@ -97,27 +95,33 @@ public class UDPClient extends Protocol implements Serializable  {
     /**
      * Reads and deserializes the UDPClient object from the file.
      */
-    public static UDPClient loadFromTextFile() {
-        UDPClient client = new UDPClient();
-        try (BufferedReader reader = new BufferedReader(new FileReader("P2Pconfig.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith("Client IP: ")) {
-                    client.clientIP = line.substring(10).trim();
-                } else if (line.startsWith("Port: ")) {
-                    client.port = Integer.parseInt(line.substring(6).trim());
-                }
-            }
-            System.out.println("Configuration loaded from text file.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return client;
-    }
+    // public static UDPClient loadFromTextFile() {
+    //     UDPClient client = new UDPClient();
+    //     try (BufferedReader reader = new BufferedReader(new FileReader("P2Pconfig.txt"))) {
+    //         String line;
+    //         while ((line = reader.readLine()) != null) {
+    //             if (line.startsWith("Client IP: ")) {
+    //                 // client.clientIP = line.substring(10).trim();
+    //                 String ipAsString = client.getIp().toString();
+    //                 ipAsString = line.substring(10).trim();
+
+    //             } else if (line.startsWith("Port: ")) {
+    //                 // client.port = Integer.parseInt(line.substring(6).trim());
+    //                 client.
+    //             }
+    //         }
+    //         System.out.println("Configuration loaded from text file.");
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return client;
+    // }
 
     public void displayConfig() {
-        System.out.println("Client IP: " + clientIP);
-        System.out.println("Port: " + port);
+        // System.out.println("Client IP: " + clientIP);
+        // System.out.println("Client IP: " + getIP());
+
+        // System.out.println("Port: " + port);
     }
 
     public static void main(String[] args) throws InterruptedException {
