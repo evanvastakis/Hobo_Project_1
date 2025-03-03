@@ -31,7 +31,7 @@ public class UDPClient extends Protocol implements Serializable {
         try {
             socket = new DatagramSocket();
 
-            this.setDestIp(InetAddress.getByName("10.111.142.78"));  // Destination IP (to be written in from config)
+            this.setDestIp(InetAddress.getByName("localhost"));  // Destination IP (to be written in from config) EVANS: 10.111.142.78
             this.setDestPort(9876);
 
             byte[] incomingData = new byte[1024];
@@ -100,7 +100,7 @@ public class UDPClient extends Protocol implements Serializable {
         UDPClient client = new UDPClient();
         
         // Sending messages
-        int maxAttempts = 5;
+        int maxAttempts = 20;
         for (int attempt = 0; attempt < maxAttempts; attempt++) {
             int random = secureRandom.nextInt(5) + 1;
             System.out.println("Waiting for " + random + " seconds");
