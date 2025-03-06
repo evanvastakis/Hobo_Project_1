@@ -38,10 +38,10 @@ public class UDPClient extends Protocol implements Serializable {
             String sentence = " ";
 
             // Evan
-            // File folder = new File("C:\\Users\\evanv\\OneDrive\\Computer_Science\\SophomoreYear\\CSC340\\Hobo_Project_1\\P2P");
+            File folder = new File("C:\\Users\\evanv\\OneDrive\\Computer_Science\\SophomoreYear\\CSC340\\Hobo_Project_1\\P2P");
             
             // Grant
-            File folder = new File("/Users/grant/Downloads/Course Materials/Spring 2025/CSC340/Hobo_Project_1/P2P");
+            // File folder = new File("/Users/grant/Downloads/Course Materials/Spring 2025/CSC340/Hobo_Project_1/P2P");
             
             File[] listOfFiles = folder.listFiles();
 

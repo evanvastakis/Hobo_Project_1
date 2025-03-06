@@ -17,9 +17,13 @@ public class UDPServer2 {
     private static final int TIMEOUT_SECONDS = 8;
 
     private boolean[] nodeStatus = new boolean[NODE_COUNT];
+    
+    // We use the String array to get or store each node's IP address
     private HashMap<String, InetAddress> nodeIPS = new HashMap<String, InetAddress>();
     private String[] IPKeys = {"node1", "node2", "node3", "node4", "node5", "node6"};
-    // private int[] nodeTimes = new int[NODE_COUNT];
+    
+    // We will be using the constant IP addresses of the nodes to track of the changing port numbers of the nodes
+    private HashMap<InetAddress, Integer> nodePorts = new HashMap<InetAddress, Integer>(); 
 
     private DatagramSocket socket = null;
 
@@ -66,8 +70,8 @@ public class UDPServer2 {
 
                 // Save client config
                 try (FileWriter writer = new FileWriter("P2Pconfig.txt")) {
-                    writer.write("Client IP: " + clientAddress + "\n");
-                    writer.write("Port: " + clientPort + "\n");
+                    writer.write(clientAddress + "\n");
+                    writer.write(clientPort + "\n");
                     System.out.println("Updated config.");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -77,31 +81,49 @@ public class UDPServer2 {
                 updateNodeStatus(clientAddress);
 
 
-                // Fills up the hash map with updated IP values
+                // Fills up the nodeIPS hash map with updated IP values
                 for (int i = 0; i < NODE_COUNT; i++) {
                     InetAddress currentAddress = nodeIPS.get(IPKeys[i]);
-                
-                    // Only replace the slot if it matches the local IP and the incoming IP is not already in the map
-                    if (currentAddress == null && !nodeIPS.containsValue(incomingPacket.getAddress())) {
-                        nodeIPS.put(IPKeys[i], incomingPacket.getAddress());
+                    int currentPort = 0;
+
+                    // Only replace the slot if it is not null and the incoming IP is not already in the map
+                    if (currentAddress == null && !nodeIPS.containsValue(clientAddress)) {
+                        nodeIPS.put(IPKeys[i], clientAddress);
                         break; // Exit loop after inserting the new address
                     }
 
-                    // Print updated IPs
+                    // only replace the slot if it is not zero and the incoming Port is not already in the map
+                    if (currentPort == 0 && !nodePorts.containsValue(clientPort)) {
+                        nodePorts.put(nodeIPS.get(IPKeys[i]), clientPort);
+                        break;
+                    }
+                    // Print updated IPs and Ports
                     System.out.println(nodeIPS.get(IPKeys[i]));
+                    System.out.println(nodePorts.get(nodeIPS.get(IPKeys[i])));
+                }
 
-                }
-                            
                 //terminate if it is "THEEND" message from the client
-                if(message.equals("THEEND")) {
-                	socket.close();
-                	break;
-                }
+                // if(message.equals("THEEND")) {
+                // 	socket.close();
+                // 	break;
+                // }
 
                 System.out.println("\nMessage recieved: " + message);
                 System.out.println("Client Details: Port: " + incomingPacket.getPort() + ", IP Address:" + incomingPacket.getAddress());
                 
-                // Create response packet                
+                // turn the message into a byte stream to send to the other nodes
+                byte[] data = message.getBytes();
+
+                // This piece of code will send the message of this client node to all the other nodes that are not his
+                for(int i = 0; i < NODE_COUNT; i++){
+                    if(!nodeIPS.get(IPKeys[i]).equals(clientAddress)){
+                        DatagramPacket nodeReplyPacket = new DatagramPacket(data, message.length(), nodeIPS.get(IPKeys[i]), nodePorts.get(nodeIPS.get(IPKeys[i])));
+                        socket.send(nodeReplyPacket);
+                        System.out.println("Send message to " + IPKeys[i]);
+                    }
+                }
+
+                // Create response packet to the node that sent the message               
                 String reply = "Thank you for the message";
                 byte[] responseData = reply.getBytes();
                 DatagramPacket replyPacket = new DatagramPacket(responseData, responseData.length, clientAddress, clientPort);
