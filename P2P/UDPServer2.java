@@ -66,8 +66,8 @@ public class UDPServer2 {
 
                 // Save client config
                 try (FileWriter writer = new FileWriter("P2Pconfig.txt")) {
-                    writer.write("Client IP: " + incomingPacket.getAddress() + "\n");
-                    writer.write("Port: " + incomingPacket.getPort() + "\n");
+                    writer.write("Client IP: " + clientAddress + "\n");
+                    writer.write("Port: " + clientPort + "\n");
                     System.out.println("Updated config.");
                 } catch (IOException e) {
                     e.printStackTrace();
