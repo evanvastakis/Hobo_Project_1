@@ -57,6 +57,9 @@ public class C2S_UDPServer2 {
 
             while (true) {
 
+                // Divider between messages
+                System.out.println("----------------------------------------------");
+
             	// Create incoming packet
                 DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
                 System.out.println("Waiting...");
@@ -97,9 +100,17 @@ public class C2S_UDPServer2 {
                         nodePorts.put(nodeIPS.get(IPKeys[i]), clientPort);
                         // break;
                     }
+
                     // Print updated IPs and Ports
-                    System.out.println("--------------" + nodeIPS.get(IPKeys[i]));
-                    System.out.println("--------------" + nodePorts.get(nodeIPS.get(IPKeys[i])));
+                    System.out.println();
+
+                    // If node is offline (null values), print that
+                    if(nodeIPS.get(IPKeys[i]) == null){
+                        System.out.println("Node " + (i+1) + " is OFFLINE.");
+                    } else {
+                        System.out.println("Node " + (i+1) + "s IP: " + nodeIPS.get(IPKeys[i]));
+                        System.out.println("Node " + (i+1) + "s Port: " + nodePorts.get(nodeIPS.get(IPKeys[i])));
+                    }
                 }
 
                 //terminate if it is "THEEND" message from the client
@@ -110,6 +121,7 @@ public class C2S_UDPServer2 {
 
                 System.out.println("\nMessage recieved: " + message);
                 System.out.println("Client Details: Port: " + incomingPacket.getPort() + ", IP Address:" + incomingPacket.getAddress());
+                System.out.println();
                 
                 // turn the message into a byte stream to send to the other nodes
                 byte[] data = message.getBytes();
@@ -119,7 +131,7 @@ public class C2S_UDPServer2 {
                     if(nodeIPS.get(IPKeys[i]) != null && !nodeIPS.get(IPKeys[i]).equals(clientAddress)) {
                         DatagramPacket nodeReplyPacket = new DatagramPacket(data, data.length, nodeIPS.get(IPKeys[i]), nodePorts.get(nodeIPS.get(IPKeys[i])));
                         socket.send(nodeReplyPacket);
-                        System.out.println("Send message to " + IPKeys[i]);
+                        System.out.println("Sending message to " + IPKeys[i]);
                     }
                 }
                 
@@ -145,7 +157,9 @@ public class C2S_UDPServer2 {
             // match incoming packet to its status 
             if(nodeIPS.get(IPKeys[i]) != null && nodeIPS.get(IPKeys[i]).equals(clientAddress)){
                 nodeStatus[i] = true;
-                System.out.println("\nNode " + (i+1) + " is alive: " + nodeStatus[i] + "\n");
+
+                // This was replaced with other println statments 
+                // System.out.println("\n UPDATE - Node " + (i+1) + " is alive: " + nodeStatus[i] + "\n");
 
                 // Restart the countdown timer for this node
                 resetCountdownTimer(IPKeys[i]);
@@ -168,9 +182,19 @@ public class C2S_UDPServer2 {
                     nodeStatus[i] = false;
                     System.out.println("\nNode " + (i + 1) + " has gone offline.\n");
 
-                    // Print updated list with offline node
+                    // Print updated list with newly offlined node
                     for (int j = 0; j < NODE_COUNT; j++) {
-                        System.out.println(nodeIPS.get(IPKeys[j]));
+
+                        System.out.println();
+
+                        if(nodeIPS.get(IPKeys[j]) == null){
+                            System.out.println("Node " + (j+1) + " is OFFLINE.");
+                        } else {
+                            System.out.println("Node " + (j+1) + "s IP: " + nodeIPS.get(IPKeys[j]));
+                            System.out.println("Node " + (j+1) + "s Port: " + nodePorts.get(nodeIPS.get(IPKeys[j])));
+                        }
+    
+                        // System.out.println(nodeIPS.get(IPKeys[j]));
                     }
                 } 
             }
