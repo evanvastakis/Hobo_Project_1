@@ -1,92 +1,88 @@
 import java.io.IOException;
 import java.net.*;
-import java.util.*;
-
-
-public class P2P_UDPClient2 {
+import java.util.Scanner;
+/**
+ * 
+ * @author cjaiswal
+ *
+ *  
+ * 
+ */
+public class P2P_UDPClient2 
+{
     private DatagramSocket socket;
-    private Map<InetAddress, List<String>> sentMessages; // Stores messages sent to each IP
-    private Scanner scanner;
-
-
-    public P2P_UDPClient2() {
-        try {
-            socket = new DatagramSocket();
-            sentMessages = new HashMap<>();
-            scanner = new Scanner(System.in);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
+    private Scanner in = new Scanner(System.in);
+    public P2P_UDPClient2() 
+    {
+    	//create a client socket with random port number chose by DatagramSocket
+    	try 
+    	{
+			socket = new DatagramSocket();
+		} 
+    	catch (SocketException e) 
+    	{
+			e.printStackTrace();
+		}
     }
 
+    public void createAndListenSocket() 
+    {
+        try 
+        {
+            char ch='y';
+            
+            //create socket for the destination/server
+            InetAddress IPAddress = InetAddress.getByName("10.111.142.78");
+            int serverPort = 9876;
+            byte[] incomingData = new byte[1024];
+            String sentence = "";
+        	byte data[] = new byte[1024];
 
-    public void createAndListenSocket() {
-        try {
-            InetAddress serverAddress = InetAddress.getByName("127.0.0.1"); // Localhost
-            int serverPort = 9876; // Port 9876 for server
-
-
-            char ch = 'y';
-            while (ch == 'y' || ch == 'Y') {
-                System.out.println("Enter your message:");
-                String message = scanner.nextLine();
-                byte[] data = message.getBytes();
-
-
-                // Send message to server on port 9876
-                DatagramPacket sendPacket = new DatagramPacket(data, data.length, serverAddress, serverPort);
+            do
+            {
+            	//construct the client packet & send it
+            	System.out.println("Enter your message:");
+            	sentence = in.nextLine();
+            	data = sentence.getBytes();
+                DatagramPacket sendPacket = new DatagramPacket(data, data.length, IPAddress, serverPort);
                 socket.send(sendPacket);
-                storeMessage(serverAddress, message); // Store the message
-
-
-                // Wait for server response
-                byte[] incomingData = new byte[1024];
+               
+                //create packet and recieve the response from the server
                 DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
                 socket.receive(incomingPacket);
-                String response = new String(incomingPacket.getData(), 0, incomingPacket.getLength());
-                System.out.println("Server response: " + response);
-
-
-                // Ask to continue or stop
-                System.out.println("Send another message? (Y/N)");
-                ch = scanner.nextLine().charAt(0);
-            }
-
-
-            // Send termination signal
-            String terminationMessage = "THEEND";
-            byte[] endData = terminationMessage.getBytes();
-            DatagramPacket sendPacket = new DatagramPacket(endData, endData.length, serverAddress, serverPort);
+                String response = new String(incomingPacket.getData());
+                System.out.println("Response from server:" + response);
+                System.out.println("Server Details:PORT " + incomingPacket.getPort()
+                + ", IP Address: " + incomingPacket.getAddress());
+                sendPacket = null; incomingPacket = null;
+                System.out.println("Chat more? Y/N...");
+                ch = in.nextLine().charAt(0);
+            }while(ch=='y' || ch=='Y');
+            
+            //send THEEND message to server to terminate
+            sentence = "THEEND";
+            data = sentence.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(data, data.length, IPAddress, 9876);
             socket.send(sendPacket);
-
-
-        } catch (IOException e) {
+            // socket.close();
+        }
+        catch (UnknownHostException e) 
+        {
+            e.printStackTrace();
+        } 
+        catch (SocketException e) 
+        {
+            e.printStackTrace();
+        } 
+        catch (IOException e) 
+        {
             e.printStackTrace();
         }
     }
 
-
-    private void storeMessage(InetAddress address, String message) {
-        sentMessages.putIfAbsent(address, new ArrayList<>());
-        sentMessages.get(address).add(message);
-    }
-
-
-    public void printSentMessages() {
-        System.out.println("\n Messages sent to the server:");
-        for (Map.Entry<InetAddress, List<String>> entry : sentMessages.entrySet()) {
-            System.out.println("🔹 Sent to " + entry.getKey().getHostAddress() + ":");
-            for (String msg : entry.getValue()) {
-                System.out.println("  ➝ " + msg);
-            }
-        }
-    }
-
-
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         P2P_UDPClient2 client = new P2P_UDPClient2();
         client.createAndListenSocket();
     }
 }
-
-

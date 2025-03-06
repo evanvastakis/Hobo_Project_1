@@ -1,93 +1,85 @@
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+/**
+ * 
+ * @author cjaiswal
+ *
+ *  
+ * 
+ */
+public class P2P_UDPServer2
+{
+    private DatagramSocket socket = null;
 
+    public P2P_UDPServer2() 
+    {
+    	try 
+    	{
+    		//create the socket assuming the server is listening on port 9876
+			socket = new DatagramSocket(9876);
+		} 
+    	catch (SocketException e) 
+    	{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-public class P2P_UDPServer2 extends Thread {
-    private static final int DEFAULT_PORT = 9876;
-    // private static final int TIMEOUT_SECONDS = 8;
-
-
-    private DatagramSocket socket;
-    // private ConcurrentHashMap<String, InetAddress> nodeIPS = new ConcurrentHashMap<>();
-    // private ConcurrentHashMap<InetAddress, Integer> nodePorts = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, List<String>> nodeMessages = new ConcurrentHashMap<>(); // Store messages per IP
-    // private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(6);
-    // private ConcurrentHashMap<String, ScheduledFuture<?>> nodeTimers = new ConcurrentHashMap<>();
-
-
-    public P2P_UDPServer2() {
-        try {
-            socket = new DatagramSocket(DEFAULT_PORT);
-            System.out.println("Server started on port: " + socket.getLocalPort());
-        } catch (SocketException e) {
-            System.err.println("Port " + DEFAULT_PORT + " is in use. Trying a random available port...");
-            try {
-                socket = new DatagramSocket(0);
-                System.out.println("Server started on port: " + socket.getLocalPort());
-            } catch (SocketException ex) {
-                System.err.println("Failed to start server: " + ex.getMessage());
-                System.exit(1);
-            }
-        }
     }
+    public void createAndListenSocket() 
+    {
+        try 
+        {
+        	//incoming data buffer
+            byte[] incomingData = new byte[1024];
 
-
-    public void createAndListenSocket() {
-        byte[] incomingData = new byte[1024];
-
-
-        while (true) {
-            try {
+            while (true) 
+            {
+            	//create incoming packet
                 DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
-                System.out.println("Waiting for messages...");
+                System.out.println("Waiting...");
+                
+                //wait for the packet to arrive and store it in incoming packet
                 socket.receive(incomingPacket);
-
-
-                InetAddress clientAddress = incomingPacket.getAddress();
-                int clientPort = incomingPacket.getPort();
-                String message = new String(incomingPacket.getData(), 0, incomingPacket.getLength()).trim();
-
-
-                System.out.println("\nReceived from " + clientAddress + ":" + clientPort + " -> " + message);
-
-
-                // Store the message in the hashmap
-                storeMessage(clientAddress, message);
-
-
-                // Acknowledge message reception
-                String reply = "Message received: " + message;
-                DatagramPacket replyPacket = new DatagramPacket(reply.getBytes(), reply.length(), clientAddress, clientPort);
+                
+                //retrieve the data
+                String message = new String(incomingPacket.getData());
+                
+                //terminate if it is "THEEND" message from the client
+                if(message.equals("THEEND"))
+                {
+                	socket.close();
+                	break;
+                }
+                System.out.println("Received message from client: " + message);
+                System.out.println("Client Details:PORT " + incomingPacket.getPort()
+                + ", IP Address:" + incomingPacket.getAddress());
+                
+                //retrieve client socket info and create response packet
+                InetAddress IPAddress = incomingPacket.getAddress();
+                int port = incomingPacket.getPort();
+                String reply = "Thank you for the message";
+                byte[] data = reply.getBytes();
+                DatagramPacket replyPacket =
+                        new DatagramPacket(data, data.length, IPAddress, port);
                 socket.send(replyPacket);
-
-
-            } catch (IOException e) {
-                System.err.println("Error receiving message: " + e.getMessage());
             }
-        }
+        } 
+        catch (SocketException e) 
+        {
+            e.printStackTrace();
+        } 
+        catch (IOException i) 
+        {
+            i.printStackTrace();
+        } 
     }
 
-
-    private void storeMessage(InetAddress clientAddress, String message) {
-        String clientKey = clientAddress.getHostAddress(); // Use the IP address as the key
-        nodeMessages.putIfAbsent(clientKey, new ArrayList<>());
-        nodeMessages.get(clientKey).add(message); // Add the message to the list of messages for this IP
-
-
-        // Print messages from the IP
-        System.out.println("\nMessages sent by " + clientKey + ":");
-        for (String msg : nodeMessages.get(clientKey)) {
-            System.out.println("  ➝ " + msg);
-        }
-    }
-
-
-    public static void main(String[] args) {
-        P2P_UDPServer2 server = new P2P_UDPServer2();
+    public static void main(String[] args) 
+    {
+        C2S_UDPServer2 server = new C2S_UDPServer2();
         server.createAndListenSocket();
     }
 }
-
-
