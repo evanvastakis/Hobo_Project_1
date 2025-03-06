@@ -1,5 +1,12 @@
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
+import java.security.SecureRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+
 /**
  * 
  * @author cjaiswal
@@ -7,7 +14,7 @@ import java.net.*;
  *  
  * 
  */
-public class UDPClient 
+public class UDPClient extends Protocol implements Serializable
 {
     private static final long serialVersionUID = 1L;
     private static final int serverPort = 9876;
