@@ -11,11 +11,12 @@ import java.util.HashMap;
  *
  */
 public class P2P_UDPServer {
-    private DatagramSocket socket = null;
+
+    DatagramSocket socket = null;
     private HashMap<InetAddress, Integer> nodeMap = new HashMap<>();  // HashMap to store client IP and port
 
     public P2P_UDPServer() {
-        // Constructor, socket initialization happens in createAndListenSocket
+        // Constructor, socket initialization will happen in createAndListenSocket
     }
 
     public void createAndListenSocket() {
@@ -32,19 +33,12 @@ public class P2P_UDPServer {
                 InetAddress IPAddress = incomingPacket.getAddress();
                 int port = incomingPacket.getPort();
 
-                // Print received message and client info
-                System.out.println("Received message from client: " + message);
-                System.out.println("Client IP: " + IPAddress.getHostAddress());
-                System.out.println("Client port: " + port);
-
                 // Store or update client information in the HashMap
-                if (!nodeMap.containsKey(IPAddress)) {
-                    nodeMap.put(IPAddress, port);  // Add new client to the map
-                    System.out.println("New node added: " + IPAddress.getHostAddress() + " with port " + port);
-                }
+                nodeMap.put(IPAddress, port);  // Add or update client IP and port in the map
+                System.out.println("Stored client IP: " + IPAddress.getHostAddress() + " with port " + port);
 
-                // Print the list of current nodes in the network
-                System.out.println("Current nodes in the network:");
+                // Optionally, print the current stored nodes
+                System.out.println("Current stored nodes:");
                 for (InetAddress node : nodeMap.keySet()) {
                     System.out.println("Node IP: " + node.getHostAddress() + ", Port: " + nodeMap.get(node));
                 }
@@ -54,16 +48,11 @@ public class P2P_UDPServer {
                 byte[] data = reply.getBytes();
                 DatagramPacket replyPacket = new DatagramPacket(data, data.length, IPAddress, port);
                 socket.send(replyPacket);
-
-                // Simulate a brief delay
-                Thread.sleep(2000);
             }
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException i) {
             i.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         } finally {
             // Ensure socket is closed properly
             if (socket != null && !socket.isClosed()) {
