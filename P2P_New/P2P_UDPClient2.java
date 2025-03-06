@@ -1,5 +1,3 @@
-package networking;
-
 import java.io.IOException;
 import java.net.*;
 import java.util.Scanner;
@@ -10,11 +8,11 @@ import java.util.Scanner;
  *  
  * 
  */
-public class UDPClient2 
+public class P2P_UDPClient2 
 {
     private DatagramSocket socket;
     private Scanner in = new Scanner(System.in);
-    public UDPClient2() 
+    public P2P_UDPClient2() 
     {
     	//create a client socket with random port number chose by DatagramSocket
     	try 
@@ -23,7 +21,6 @@ public class UDPClient2
 		} 
     	catch (SocketException e) 
     	{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -85,7 +82,7 @@ public class UDPClient2
 
     public static void main(String[] args) 
     {
-        UDPClient2 client = new UDPClient2();
+        P2P_UDPClient2 client = new P2P_UDPClient2();
         client.createAndListenSocket();
     }
 }

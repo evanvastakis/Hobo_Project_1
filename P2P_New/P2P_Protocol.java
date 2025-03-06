@@ -1,6 +1,6 @@
 import java.net.InetAddress;
 
-public class Protocol {
+public class P2P_Protocol {
     
     private double timeStamp; // Time at which packet was made.
     private int port; // Sender port 
@@ -10,7 +10,7 @@ public class Protocol {
     private String name; // Name of node with its ip
     private String fileList; // List of that node's files
 
-    public Protocol(){
+    public P2P_Protocol(){
     }
 
     // Getters

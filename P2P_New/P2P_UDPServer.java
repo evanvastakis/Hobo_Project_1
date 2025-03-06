@@ -1,5 +1,3 @@
-package Networking;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -12,11 +10,11 @@ import java.net.SocketException;
  *  
  * 
  */
-public class UDPServer 
+public class P2P_UDPServer 
 {
     DatagramSocket socket = null;
 
-    public UDPServer() 
+    public P2P_UDPServer() 
     {
 
     }
@@ -67,7 +65,7 @@ public class UDPServer
 
     public static void main(String[] args) 
     {
-        UDPServer server = new UDPServer();
+        P2P_UDPServer server = new P2P_UDPServer();
         server.createAndListenSocket();
     }
 }
