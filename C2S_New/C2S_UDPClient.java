@@ -38,10 +38,10 @@ public class C2S_UDPClient extends C2S_Protocol implements Serializable {
             String sentence = " ";
 
             // Evan
-            // File folder = new File("C:\\Users\\evanv\\OneDrive\\Computer_Science\\SophomoreYear\\CSC340\\Hobo_Project_1\\P2P");
+            // File folder = new File("C:\\Users\\evanv\\OneDrive\\Computer_Science\\SophomoreYear\\CSC340\\Hobo_Project_1\\P2P_New");
             
             // Grant
-            File folder = new File("/Users/grant/Downloads/Course Materials/Spring 2025/CSC340/Hobo_Project_1/P2P");
+            File folder = new File("/Users/grant/Downloads/Course Materials/Spring 2025/CSC340/Hobo_Project_1/P2P_New");
             
             File[] listOfFiles = folder.listFiles();
 
