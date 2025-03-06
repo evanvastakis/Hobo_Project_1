@@ -124,7 +124,7 @@ public class P2P_UDPClient extends P2P_Protocol implements Serializable
     }
 }
 
-class UDPServer2 extends Thread {
+class P2P_UDPServer2 extends Thread {
     
     final int NODE_COUNT = 6;
     private static final int TIMEOUT_SECONDS = 8;
@@ -144,7 +144,7 @@ class UDPServer2 extends Thread {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(NODE_COUNT);
     private final HashMap<String, ScheduledFuture<?>> nodeTimers = new HashMap<>();
 
-    public UDPServer2() {
+    public P2P_UDPServer2() {
     	try {
     		//create the socket assuming the server is listening on port 9876
 			socket = new DatagramSocket(9876);

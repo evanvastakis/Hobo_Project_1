@@ -79,7 +79,7 @@ public class P2P_UDPServer2
 
     public static void main(String[] args) 
     {
-        UDPServer2 server = new UDPServer2();
+        C2S_UDPServer2 server = new C2S_UDPServer2();
         server.createAndListenSocket();
     }
 }

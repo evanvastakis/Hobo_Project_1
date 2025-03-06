@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author cjaiswal
  */
-public class UDPClient extends Protocol implements Serializable {
+public class C2S_UDPClient extends C2S_Protocol implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final int serverPort = 9876;
@@ -16,7 +16,7 @@ public class UDPClient extends Protocol implements Serializable {
     // DatagramSocket is not serializable, so mark it as transient
     private transient DatagramSocket socket;
 
-    public UDPClient() {
+    public C2S_UDPClient() {
         // try {
         //     // Get own IP
         //     InetAddress ip = InetAddress.getLocalHost();
@@ -97,7 +97,7 @@ public class UDPClient extends Protocol implements Serializable {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        UDPClient client = new UDPClient();
+        C2S_UDPClient client = new C2S_UDPClient();
         
         // Sending messages
         int maxAttempts = 20;
