@@ -31,17 +31,17 @@ public class C2S_UDPClient extends C2S_Protocol implements Serializable {
         try {
             socket = new DatagramSocket();
 
-            this.setDestIp(InetAddress.getByName("10.111.134.82"));  // Destination IP (to be written in from config) EVANS: 10.111.142.78
+            this.setDestIp(InetAddress.getByName("localhost"));  // Destination IP (to be written in from config) EVANS: 10.111.142.78  MINE: 10.111.134.82
             this.setDestPort(9876);
 
             byte[] incomingData = new byte[1024];
             String sentence = " ";
 
             // Evan
-            // File folder = new File("C:\\Users\\evanv\\OneDrive\\Computer_Science\\SophomoreYear\\CSC340\\Hobo_Project_1\\P2P_New");
+            // File folder = new File("C:\\Users\\evanv\\OneDrive\\Computer_Science\\SophomoreYear\\CSC340\\Hobo_Project_1\\C2P_New");
             
             // Grant
-            File folder = new File("/Users/grant/Downloads/Course Materials/Spring 2025/CSC340/Hobo_Project_1/P2P_New");
+            File folder = new File("/Users/grant/Downloads/Course Materials/Spring 2025/CSC340/Hobo_Project_1/C2P_New");
             
             File[] listOfFiles = folder.listFiles();
 
@@ -57,7 +57,7 @@ public class C2S_UDPClient extends C2S_Protocol implements Serializable {
             byte[] data = sentence.getBytes();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, getDestIp(), serverPort);
             socket.send(sendPacket);
-            System.out.println("Message sent from client");
+            System.out.println("Message sent.\n");
 
             // Receiving (response)
             DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
@@ -70,6 +70,8 @@ public class C2S_UDPClient extends C2S_Protocol implements Serializable {
 
             // Save the updated configuration
             // saveToTextFile();
+
+            System.out.println("----------------------------------------------");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,9 +105,8 @@ public class C2S_UDPClient extends C2S_Protocol implements Serializable {
         int maxAttempts = 20;
         for (int attempt = 0; attempt < maxAttempts; attempt++) {
             int random = secureRandom.nextInt(5) + 1;
-            System.out.println("Waiting for " + random + " seconds");
+            System.out.println("Waiting for " + random + " seconds...\n");
             TimeUnit.SECONDS.sleep(random);
-            System.out.println("We are waiting");
             client.createAndListenSocket();
         }
 
