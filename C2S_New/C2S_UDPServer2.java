@@ -86,20 +86,20 @@ public class C2S_UDPServer2 {
                     InetAddress currentAddress = nodeIPS.get(IPKeys[i]);
                     int currentPort = 0;
 
-                    // Only replace the slot if it is not null and the incoming IP is not already in the map
+                    // Only replace the slot if it is null and the incoming IP is not already in the map
                     if (currentAddress == null && !nodeIPS.containsValue(clientAddress)) {
                         nodeIPS.put(IPKeys[i], clientAddress);
-                        break; // Exit loop after inserting the new address
+                        // break; // Exit loop after inserting the new address
                     }
 
-                    // only replace the slot if it is not zero and the incoming Port is not already in the map
+                    // only replace the slot if it is zero and the incoming Port is not already in the map
                     if (currentPort == 0 && !nodePorts.containsValue(clientPort)) {
                         nodePorts.put(nodeIPS.get(IPKeys[i]), clientPort);
-                        break;
+                        // break;
                     }
                     // Print updated IPs and Ports
-                    System.out.println(nodeIPS.get(IPKeys[i]));
-                    System.out.println(nodePorts.get(nodeIPS.get(IPKeys[i])));
+                    System.out.println("--------------" + nodeIPS.get(IPKeys[i]));
+                    System.out.println("--------------" + nodePorts.get(nodeIPS.get(IPKeys[i])));
                 }
 
                 //terminate if it is "THEEND" message from the client
