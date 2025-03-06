@@ -116,8 +116,8 @@ public class C2S_UDPServer2 {
 
                 // This piece of code will send the message of this client node to all the other nodes that are not his
                 for(int i = 0; i < NODE_COUNT; i++){
-                    if(nodeIPS.get(IPKeys[i]) != null && nodeIPS.get(IPKeys[i]).equals(clientAddress) && nodePorts.get(IPKeys[i]) != null && nodePorts.get(nodeIPS.get(IPKeys[i])) == clientPort){
-                        DatagramPacket nodeReplyPacket = new DatagramPacket(data, message.length(), nodeIPS.get(IPKeys[i]), nodePorts.get(nodeIPS.get(IPKeys[i])));
+                    if(nodeIPS.get(IPKeys[i]) != null && nodeIPS.get(IPKeys[i]).equals(clientAddress) && nodePorts.get(nodeIPS.get(IPKeys[i])) != null && nodePorts.get(nodeIPS.get(IPKeys[i])) == clientPort){
+                        DatagramPacket nodeReplyPacket = new DatagramPacket(data, data.length, nodeIPS.get(IPKeys[i]), nodePorts.get(nodeIPS.get(IPKeys[i])));
                         socket.send(nodeReplyPacket);
                         System.out.println("Send message to " + IPKeys[i]);
                     }
