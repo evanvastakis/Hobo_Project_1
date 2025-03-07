@@ -15,6 +15,7 @@ public class P2P_UDPClient extends P2P_Protocol implements Serializable {
     String evanIP = "10.111.134.82";
     String grantIP = "10.111.142.78";
     String jessIP = "10.111.152.150";
+
     String vm1IP = "";
     String vm2IP = "";
     String vm3IP = "";
@@ -37,9 +38,9 @@ public class P2P_UDPClient extends P2P_Protocol implements Serializable {
 
             for(int currentNode = 0; currentNode < 6; currentNode++) {
 
-                if(!IPS[currentNode].equals()){
-                    this.setDestIp(InetAddress.getByName(IPS[currentNode]));
-                }
+                // if(!IPS[currentNode].equals()){
+                //     this.setDestIp(InetAddress.getByName(IPS[currentNode]));
+                // }
 
                 // this.setDestIp(InetAddress.getByName(IPS[currentNode]));  // Destination IP (to be written in from config) EVANS: 10.111.142.78  MINE: 10.111.134.82
                 this.setDestPort(9876);
@@ -65,12 +66,11 @@ public class P2P_UDPClient extends P2P_Protocol implements Serializable {
 
                 // Sending
                 byte[] data = sentence.getBytes();
-                for(int i = 0; i < 6; i++) {
-                    DatagramPacket sendPacket = new DatagramPacket(data, data.length, getDestIp(), serverPort);
-                    socket.send(sendPacket);
-                    System.out.println("Message sent.\n");
-                }
-
+                this.setDestIp(InetAddress.getByName(IPS[currentNode])); // Ensure IP is set
+                DatagramPacket sendPacket = new DatagramPacket(data, data.length, getDestIp(), serverPort);
+                socket.send(sendPacket);
+                System.out.println("Message sent to: " + IPS[currentNode]);
+                
                 // Receiving (response)
                 // DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
                 // socket.receive(incomingPacket);
@@ -134,7 +134,7 @@ public class P2P_UDPClient extends P2P_Protocol implements Serializable {
         // Sending messages
         int maxAttempts = 20;
         for (int attempt = 0; attempt < maxAttempts; attempt++) {
-            int random = secureRandom.nextInt(30) + 1; // Bound: max time between heartbeats
+            int random = secureRandom.nextInt(5) + 1; // Bound: max time between heartbeats
             System.out.println("Waiting for " + random + " seconds...\n");
             TimeUnit.SECONDS.sleep(random);
             client.createAndListenSocket();
