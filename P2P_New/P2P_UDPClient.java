@@ -68,9 +68,6 @@ public class P2P_UDPClient extends P2P_Protocol implements Serializable {
                     System.out.println("Message sent to: " + IPS[i]);  // Display which IP the message was sent to
                 }
                                 
-                // Receiving (response)
-                // DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
-                // socket.receive(incomingPacket);
 
                 // Extract only the actual received data
                 // String response = new String(incomingPacket.getData(), 0, incomingPacket.getLength());
@@ -81,8 +78,12 @@ public class P2P_UDPClient extends P2P_Protocol implements Serializable {
 
                 System.out.println("-----------------------");
 
+                // Receiving (response)
+                // DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
+                // socket.receive(incomingPacket);
+                
                 // Receive server's file listing 
-                System.out.println("Other Client's File Listings (From Server):");
+                System.out.println("Other Client's File Listings:");
                 byte[] fileLists = new byte[2048];
                 DatagramPacket fileListsPacket = new DatagramPacket(fileLists, fileLists.length);
 
