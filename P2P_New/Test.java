@@ -25,9 +25,10 @@ public class Test extends P2P_Protocol implements Serializable {
     public void communicate() {
         try {
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(IPS.length);
+            InetAddress localAddress = InetAddress.getLocalHost();
 
             for (String ip : IPS) {
-                if (ip.isEmpty()) continue;
+                if (ip.isEmpty() || ip.equals(localAddress.getHostAddress())) continue;
                 InetAddress destIp = InetAddress.getByName(ip);
                 scheduler.scheduleAtFixedRate(() -> {
                     try {
@@ -44,7 +45,7 @@ public class Test extends P2P_Protocol implements Serializable {
     }
 
     private void sendFiles(InetAddress destIp) throws IOException {
-        File folder = new File("C:\\Users\\evanv\\OneDrive\\Computer_Science\\SophomoreYear\\CSC340\\Hobo_Project_1\\P2P_New");
+        File folder = new File("C:\\Users\\evanv\\OneDrive\\Computer_Science\\SophomoreYear\\CSC340\\Hobo_Project_1\\C2S_New");
         File[] files = folder.listFiles();
         StringBuilder fileList = new StringBuilder();
 
@@ -67,8 +68,9 @@ public class Test extends P2P_Protocol implements Serializable {
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
         try {
             socket.receive(packet);
+            InetAddress senderAddress = packet.getAddress();
             String response = new String(packet.getData(), 0, packet.getLength());
-            System.out.println("Received: " + response);
+            System.out.println("Received from " + senderAddress.getHostAddress() + ": " + response);
         } catch (SocketTimeoutException e) {
             System.out.println("No response received. Node might be offline.");
         } catch (IOException e) {
