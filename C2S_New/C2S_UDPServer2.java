@@ -18,12 +18,10 @@ public class C2S_UDPServer2 {
 
     private boolean[] nodeStatus = new boolean[NODE_COUNT];
     
-    // We use the String array to get or store each node's IP address
     private HashMap<String, InetAddress> nodeIPS = new HashMap<String, InetAddress>();
-    private String[] IPKeys = {"node1", "node2", "node3", "node4", "node5", "node6"};
-    
-    // We will be using the constant IP addresses of the nodes to track of the changing port numbers of the nodes
     private HashMap<InetAddress, Integer> nodePorts = new HashMap<InetAddress, Integer>(); 
+    private HashMap<InetAddress, String> nodeFiles = new HashMap<InetAddress, String>();
+    private String[] IPKeys = {"node1", "node2", "node3", "node4", "node5", "node6"};
 
     private DatagramSocket socket = null;
 
@@ -66,16 +64,21 @@ public class C2S_UDPServer2 {
                 // Wait for the packet to arrive and store it in incoming packet
                 socket.receive(incomingPacket);
 
-                // Store client details in variables 
+                // Extract client details 
                 InetAddress clientAddress = incomingPacket.getAddress();
                 int clientPort = incomingPacket.getPort();
                 String message = new String(incomingPacket.getData(), 0, incomingPacket.getLength());
+
+                // Update client record
+                // nodePorts.put(clientAddress, clientPort);
+                nodeFiles.put(clientAddress, message);
+                // System.out.println("\nReceived update from " + clientAddress);
 
                 // Save client config
                 try (FileWriter writer = new FileWriter("P2Pconfig.txt")) {
                     writer.write(clientAddress + "\n");
                     writer.write(clientPort + "\n");
-                    System.out.println("Updated config.");
+                    System.out.println("\nUpdated config.");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -96,9 +99,8 @@ public class C2S_UDPServer2 {
                     }
 
                     // only replace the slot if it is zero and the incoming Port is not already in the map
-                    if (currentPort == 0 && !nodePorts.containsValue(clientPort)) {
+                    if (currentPort == 0 && (nodeIPS.get(IPKeys[i]) != null) && (nodeIPS.get(IPKeys[i]).equals(clientAddress))) {
                         nodePorts.put(nodeIPS.get(IPKeys[i]), clientPort);
-                        // break;
                     }
 
                     // Print updated IPs and Ports
@@ -110,6 +112,7 @@ public class C2S_UDPServer2 {
                     } else {
                         System.out.println("Node " + (i+1) + "s IP: " + nodeIPS.get(IPKeys[i]));
                         System.out.println("Node " + (i+1) + "s Port: " + nodePorts.get(nodeIPS.get(IPKeys[i])));
+                        System.out.println("Node " + (i+1) + "s Files: " + nodeFiles.get(nodeIPS.get(IPKeys[i])));
                     }
                 }
 
@@ -119,7 +122,8 @@ public class C2S_UDPServer2 {
                 // 	break;
                 // }
 
-                System.out.println("\nMessage recieved: " + message);
+                System.out.println("\nINCOMING DATA");
+                System.out.println("Message recieved: " + message);
                 System.out.println("Client Details: Port: " + incomingPacket.getPort() + ", IP Address:" + incomingPacket.getAddress());
                 System.out.println();
                 
@@ -128,9 +132,9 @@ public class C2S_UDPServer2 {
 
                 // This piece of code will send the message of this client node to all the other nodes that are not his
                 for(int i = 0; i < NODE_COUNT; i++){
-                    if(nodeIPS.get(IPKeys[i]) != null && !nodeIPS.get(IPKeys[i]).equals(clientAddress)) {
-                        DatagramPacket nodeReplyPacket = new DatagramPacket(data, data.length, nodeIPS.get(IPKeys[i]), nodePorts.get(nodeIPS.get(IPKeys[i])));
-                        socket.send(nodeReplyPacket);
+                    if(nodeIPS.get(IPKeys[i]) != null && !(nodeIPS.get(IPKeys[i]).equals(clientAddress))) {
+                        DatagramPacket allNodesFileListing = new DatagramPacket(data, data.length, nodeIPS.get(IPKeys[i]), nodePorts.get(nodeIPS.get(IPKeys[i])));
+                        socket.send(allNodesFileListing);
                         System.out.println("Sending message to " + IPKeys[i]);
                     }
                 }
@@ -189,9 +193,12 @@ public class C2S_UDPServer2 {
 
                         if(nodeIPS.get(IPKeys[j]) == null){
                             System.out.println("Node " + (j+1) + " is OFFLINE.");
+                            // If all nodes are offline, print an EPIC divider
+                            
                         } else {
                             System.out.println("Node " + (j+1) + "s IP: " + nodeIPS.get(IPKeys[j]));
                             System.out.println("Node " + (j+1) + "s Port: " + nodePorts.get(nodeIPS.get(IPKeys[j])));
+                            System.out.println("Node " + (i+1) + "s Files: " + nodeFiles.get(nodeIPS.get(IPKeys[i])));
                         }
     
                         // System.out.println(nodeIPS.get(IPKeys[j]));
