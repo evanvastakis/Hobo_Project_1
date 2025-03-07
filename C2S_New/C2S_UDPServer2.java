@@ -62,7 +62,7 @@ public class C2S_UDPServer2 {
             	// Create incoming packet
                 DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
                 System.out.println("Waiting...");
-                // Wait for the packet to arrive and store it in incoming packet
+                // Wait for the packet to arrisve and store it in incoming packet
                 socket.receive(incomingPacket);
 
                 // Extract client details 
