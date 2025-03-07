@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 public class P2P_UDPClient extends P2P_Protocol implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final int NODE_COUNT = 6;
     private static int serverPort = 9876;
 
     String evanIP = "10.111.134.82";
@@ -60,11 +61,13 @@ public class P2P_UDPClient extends P2P_Protocol implements Serializable {
 
                 // Sending
                 byte[] data = sentence.getBytes();
-                this.setDestIp(InetAddress.getByName(IPS[currentNode])); // Ensure IP is set
-                DatagramPacket sendPacket = new DatagramPacket(data, data.length, getDestIp(), serverPort);
-                socket.send(sendPacket);
-                System.out.println("Message sent to: " + IPS[currentNode]);
-                
+                for (int i = 0; i < NODE_COUNT; i++) {
+                    this.setDestIp(InetAddress.getByName(IPS[i])); // Use the correct index to get each IP
+                    DatagramPacket sendPacket = new DatagramPacket(data, data.length, getDestIp(), serverPort);
+                    socket.send(sendPacket);
+                    System.out.println("Message sent to: " + IPS[i]);  // Display which IP the message was sent to
+                }
+                                
                 // Receiving (response)
                 // DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
                 // socket.receive(incomingPacket);
