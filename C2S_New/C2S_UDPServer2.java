@@ -5,6 +5,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -128,7 +129,8 @@ public class C2S_UDPServer2 {
                 System.out.println();
                 
                 // turn the message into a byte stream to send to the other nodes
-                byte[] data = message.getBytes();
+                byte[] data = getNodeFilesString().getBytes();
+
 
                 // This piece of code will send the message of this client node to all the other nodes that are not his
                 for(int i = 0; i < NODE_COUNT; i++){
@@ -153,6 +155,20 @@ public class C2S_UDPServer2 {
             i.printStackTrace();
         } 
     }
+
+    public String getNodeFilesString() {
+        StringBuilder result = new StringBuilder();
+        
+        for (Map.Entry<InetAddress, String> entry : nodeFiles.entrySet()) {
+            result.append(entry.getKey().toString())
+                .append(": ")
+                .append(entry.getValue())
+                .append("\n");
+        }
+    
+        return result.length() > 0 ? result.toString().trim() : "No entries in the map";
+    }
+
 
     public void updateNodeStatus(InetAddress clientAddress){
         // How we will make sure that the node is up or down
@@ -198,7 +214,7 @@ public class C2S_UDPServer2 {
                         } else {
                             System.out.println("Node " + (j+1) + "s IP: " + nodeIPS.get(IPKeys[j]));
                             System.out.println("Node " + (j+1) + "s Port: " + nodePorts.get(nodeIPS.get(IPKeys[j])));
-                            System.out.println("Node " + (i+1) + "s Files: " + nodeFiles.get(nodeIPS.get(IPKeys[i])));
+                            System.out.println("Node " + (j+1) + "s Files: " + nodeFiles.get(nodeIPS.get(IPKeys[i])));
                         }
     
                         // System.out.println(nodeIPS.get(IPKeys[j]));
